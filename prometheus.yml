@@ -1,0 +1,10 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'erpc'
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['erpc:4001']   # use the container name on the same docker network
+

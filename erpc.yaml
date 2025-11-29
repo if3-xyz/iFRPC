@@ -1,0 +1,67 @@
+logLevel: info
+
+server:
+  httpHostV4: 0.0.0.0
+  httpPortV4: 4000
+  maxTimeout: 30s
+
+metrics:
+  enabled: true
+  hostV4: 0.0.0.0
+  port: 4001
+
+database:
+  evmJsonRpcCache:
+    connectors:
+      - id: memory-cache
+        driver: memory
+
+      - id: redis-cache
+        driver: redis
+        redis:
+          addr: ${REDIS_URL}
+
+    policies:
+      - network: "*"
+        method: "*"
+        finality: realtime
+        empty: allow
+        connector: memory-cache
+        ttl: 2s
+
+      - network: "*"
+        method: "*"
+        finality: unfinalized
+        empty: allow
+        connector: redis-cache
+        ttl: 10s
+
+      - network: "*"
+        method: "*"
+        finality: finalized
+        empty: allow
+        connector: redis-cache
+        ttl: 5m
+
+projects:
+  - id: main
+    networks:
+      - architecture: evm
+        evm:
+          chainId: 84532
+        failsafe:
+          timeout:
+            duration: 30s
+          retry:
+            maxAttempts: 3
+            delay: 500ms
+            backoffMaxDelay: 10s
+            backoffFactor: 0.3
+            jitter: 500ms
+          hedge:
+            delay: 1000ms
+            maxCount: 2
+
+    upstreams:
+      - endpoint: https://sepolia.base.org
+      - endpoint: https://base-sepolia-rpc.publicnode.com
