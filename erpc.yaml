@@ -48,7 +48,7 @@ projects:
     networks:
       - architecture: evm
         evm:
-          chainId: 84532
+          chainId: 0
         failsafe:
           timeout:
             duration: 30s
@@ -63,5 +63,3 @@ projects:
             maxCount: 2
 
     upstreams:
-      - endpoint: https://sepolia.base.org
-      - endpoint: https://base-sepolia-rpc.publicnode.com
